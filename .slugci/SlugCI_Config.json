@@ -1,0 +1,29 @@
+{
+  "ConfigStructureVersion": "0.31.2",
+  "UseCodeCoverage": true,
+  "CodeCoverageThreshold": 90,
+  "DeployProdRoot": null,
+  "DeployAlphaRoot": null,
+  "DeployBetaRoot": null,
+  "DeployDevRoot": null,
+  "DeployToVersionedFolder": true,
+  "DeployFolderUsesSemVer": true,
+  "DeployToAssemblyFolders": false,
+  "GitRemote": null,
+  "AngularDeployRootName": null,
+  "Projects": [
+    {
+      "Name": "DayTimeInterval",
+      "Deploy": "Nuget",
+      "HasTypeWriterScripts": false,
+      "IsTestProject": false
+    },
+    {
+      "Name": "Test_DayTimeInterval",
+      "Deploy": "None",
+      "HasTypeWriterScripts": false,
+      "IsTestProject": true
+    }
+  ],
+  "AngularProjects": []
+}
