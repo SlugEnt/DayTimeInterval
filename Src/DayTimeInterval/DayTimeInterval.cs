@@ -9,6 +9,9 @@ using System.Runtime.CompilerServices;
 namespace SlugEnt
 {
     
+    /// <summary>
+    /// An Interval of time that covers a single "day".  Day being defined as a 24 hour period of time.  An Interval can cross midnight.  
+    /// </summary>
     public class DayTimeInterval
     {
         public const long TICKS_IN_SECOND = 10000000;
@@ -115,6 +118,12 @@ namespace SlugEnt
         }
 
 
+        /// <summary>
+        ///  Checks to see if the current ticks value is within the allowed interval window
+        /// </summary>
+        /// <param name="currentDateInTicks"></param>
+        /// <param name="ticksSinceMidnight"></param>
+        /// <returns></returns>
         private bool IntervalCheck (long currentDateInTicks,long ticksSinceMidnight)
         {
             if (IsNegativeCheck)
@@ -208,5 +217,24 @@ namespace SlugEnt
         }
 
        
+
+        /// <summary>
+        /// Gets the start time of the NEXT interval.  If the start time for the current day has already passed, then add 1 day and return it.
+        /// </summary>
+        /// <returns></returns>
+        public DateTimeOffset GetNextIntervalStartDateTimeOffset ()
+        {
+            DateTimeOffset current = DateTimeOffset.UtcNow;
+            DateTimeOffset midnight = new DateTimeOffset(current.Year, current.Month, current.Day, 0, 0, 0, TimeSpan.Zero);
+            DateTimeOffset next = midnight.AddTicks(StartTime);
+
+            // if Next time is in future, then return it
+            if (next > current) return next;
+
+            // Ok.  We need to move to next day.
+            midnight = midnight.AddDays(1);
+            next = midnight.AddTicks(StartTime);
+            return next;
+        }
     }
 }
