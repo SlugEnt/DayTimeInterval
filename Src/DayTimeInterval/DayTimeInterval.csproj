@@ -13,11 +13,21 @@
     <RepositoryType>Git</RepositoryType>
     <FileVersion>0.5.0.0</FileVersion>
     <Version>0.5.0</Version>
-    <AssemblyName>Slugent.DayTimeInterval</AssemblyName>
+    <AssemblyName>SlugEnt.DayTimeInterval</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DocumentationFile></DocumentationFile>
+	</PropertyGroup>
+	
   <ItemGroup>
     <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\README.md">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>

@@ -82,7 +82,9 @@ namespace SlugEnt
 
             // Get Millisecs since midnight
             DateTime midnight = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0, 0);
-            
+
+            return IntervalCheck(currentTicks, midnight.Ticks);
+            /*
             if (IsNegativeCheck) {
                 if ((midnight.Ticks + StartTime) <= currentTicks) return true;
                 if ((midnight.Ticks + EndTime) >= currentTicks) return true;
@@ -91,7 +93,41 @@ namespace SlugEnt
 
             if ((midnight.Ticks + StartTime) <= currentTicks && (midnight.Ticks + EndTime) >= currentTicks) return true;
             return false;
+            */
         }
+
+
+        /// <summary>
+        /// Returns true if the time portion of the given DateTime parameter is within the interval.
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <returns></returns>
+        public bool IsInInterval(DateTimeOffset dateTime)
+        {
+            long currentTicks = dateTime.Ticks;
+
+
+            // Get Millisecs since midnight
+            TimeZoneInfo local = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+            DateTimeOffset midnight = new DateTimeOffset(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0,TimeSpan.Zero);
+
+            return IntervalCheck(currentTicks, midnight.Ticks);
+        }
+
+
+        private bool IntervalCheck (long currentDateInTicks,long ticksSinceMidnight)
+        {
+            if (IsNegativeCheck)
+            {
+                if ((ticksSinceMidnight + StartTime) <= currentDateInTicks) return true;
+                if ((ticksSinceMidnight + EndTime) >= currentDateInTicks) return true;
+                return false;
+            }
+
+            if ((ticksSinceMidnight + StartTime) <= currentDateInTicks && (ticksSinceMidnight + EndTime) >= currentDateInTicks) return true;
+            return false;
+        }
+
 
 
         /// <summary>
