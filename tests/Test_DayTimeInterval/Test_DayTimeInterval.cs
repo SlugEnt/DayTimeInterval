@@ -62,13 +62,12 @@ namespace Test_DayTimeInterval
             DateTime current = DateTime.Now;
             current = new DateTime(current.Year, current.Month, current.Day, hour, minute, second);
             current = DateTime.SpecifyKind(current, DateTimeKind.Local);
-            DateTimeOffset simulated = current;
+            DateTime simulated = current;
             
 
 
             // Create the interval
-            TimeZoneInfo local = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-            DayTimeInterval timeInterval = new DayTimeInterval("6am", "8pm",local.BaseUtcOffset);
+            DayTimeInterval timeInterval = new DayTimeInterval("6am", "8pm");
             Assert.AreEqual(result,timeInterval.IsInInterval(simulated), "A10: ");
         }
 
@@ -85,16 +84,15 @@ namespace Test_DayTimeInterval
         [TestCase(0, 0, 0, true)]
         public void IsInIntervalNegativeTime(int hour, int minute, int second, bool result)
         {
-            DateTimeOffset current = DateTimeOffset.Now;
-            DateTimeOffset simulated = new DateTimeOffset(current.Year, current.Month, current.Day, hour, minute, second, TimeSpan.Zero);
+            DateTime current = DateTime.Now;
+            DateTime simulated = new DateTime(current.Year, current.Month, current.Day, hour, minute, second);
 
             // Create the interval
-            TimeZoneInfo local = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-            DayTimeInterval timeInterval = new DayTimeInterval("6pm", "3am",local.BaseUtcOffset);
+            DayTimeInterval timeInterval = new DayTimeInterval("6pm", "3am");
             Assert.AreEqual(result, timeInterval.IsInInterval(simulated), "A10: ");
         }
 
-
+        /*
         [Test]
         [TestCase(2,"2am")]
         [TestCase(5, "5am")]
@@ -119,5 +117,6 @@ namespace Test_DayTimeInterval
 
             Assert.AreEqual(utcTicks,DayTimeInterval.ConvertTimeStringTimezone(time,offset));
         }
+        */
     }
 }

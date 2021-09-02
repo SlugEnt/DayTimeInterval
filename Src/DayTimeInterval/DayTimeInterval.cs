@@ -37,9 +37,9 @@ namespace SlugEnt
         /// </summary>
         /// <param name="startTime">Time in format of 12:30:02 AM, or 4pm,  or 16:20</param>
         /// <param name="endTime">Time in format of 12:30:02 AM, or 4pm,  or 16:20</param>
-        public DayTimeInterval (string startTime, string endTime, TimeSpan utcOffset) { 
-            StartTime = ConvertTimeStringTimezone(startTime,utcOffset);
-            EndTime = ConvertTimeStringTimezone(endTime,utcOffset);
+        public DayTimeInterval (string startTime, string endTime) { 
+            StartTime = ConvertTimeString(startTime);
+            EndTime = ConvertTimeString(endTime);
 
             DetermineIntervalType(StartTime, EndTime);
         }
