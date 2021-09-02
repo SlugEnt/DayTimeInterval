@@ -14,8 +14,6 @@ namespace SlugEnt
     /// </summary>
     public class DayTimeInterval
     {
-        public const long TICKS_IN_SECOND = 10000000;
-
         /// <summary>
         /// The number of ticks since midnight that the interval starts at.
         /// </summary>
@@ -35,19 +33,20 @@ namespace SlugEnt
 
 
         /// <summary>
-        /// Constructor
+        /// Constructor that accepts a TimeSpan Offset for entering times in some time zone other than UTC.
         /// </summary>
         /// <param name="startTime">Time in format of 12:30:02 AM, or 4pm,  or 16:20</param>
         /// <param name="endTime">Time in format of 12:30:02 AM, or 4pm,  or 16:20</param>
-        public DayTimeInterval (string startTime, string endTime) { 
-            StartTime = ConvertTimeString(startTime);
-            EndTime = ConvertTimeString(endTime);
+        public DayTimeInterval (string startTime, string endTime, TimeSpan utcOffset) { 
+            StartTime = ConvertTimeStringTimezone(startTime,utcOffset);
+            EndTime = ConvertTimeStringTimezone(endTime,utcOffset);
+
             DetermineIntervalType(StartTime, EndTime);
         }
 
 
         /// <summary>
-        /// Constructor
+        /// Constructor that accepts start and end time in UTC time.
         /// </summary>
         /// <param name="startTime">Ticks since midnight of the start time of the interval</param>
         /// <param name="endTime">Ticks since midnight of the end time of the interval</param>
@@ -87,32 +86,21 @@ namespace SlugEnt
             DateTime midnight = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0, 0);
 
             return IntervalCheck(currentTicks, midnight.Ticks);
-            /*
-            if (IsNegativeCheck) {
-                if ((midnight.Ticks + StartTime) <= currentTicks) return true;
-                if ((midnight.Ticks + EndTime) >= currentTicks) return true;
-                return false;
-            }
-
-            if ((midnight.Ticks + StartTime) <= currentTicks && (midnight.Ticks + EndTime) >= currentTicks) return true;
-            return false;
-            */
         }
 
 
         /// <summary>
         /// Returns true if the time portion of the given DateTime parameter is within the interval.
         /// </summary>
-        /// <param name="dateTime"></param>
+        /// <param name="dateTimeOffset"></param>
         /// <returns></returns>
-        public bool IsInInterval(DateTimeOffset dateTime)
+        public bool IsInInterval(DateTimeOffset dateTimeOffset)
         {
-            long currentTicks = dateTime.Ticks;
+            long currentTicks = dateTimeOffset.Ticks;
 
 
-            // Get Millisecs since midnight
-            TimeZoneInfo local = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-            DateTimeOffset midnight = new DateTimeOffset(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0,TimeSpan.Zero);
+            // Get the midnight time
+            DateTimeOffset midnight = new DateTimeOffset(dateTimeOffset.Year, dateTimeOffset.Month, dateTimeOffset.Day, 0, 0, 0,TimeSpan.Zero);
 
             return IntervalCheck(currentTicks, midnight.Ticks);
         }
@@ -137,6 +125,24 @@ namespace SlugEnt
             return false;
         }
 
+
+
+        /// <summary>
+        /// Takes a time string based upon some UTC Offset and converts it to Ticks since midnight in UTC time.
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="utcOffset"></param>
+        /// <returns></returns>
+        public static long ConvertTimeStringTimezone (string time, TimeSpan utcOffset) {
+            long tickTime = ConvertTimeString(time);
+            tickTime = tickTime + (-1 * utcOffset.Ticks);
+            if ( tickTime < 0 ) {
+                tickTime = TimeSpan.TicksPerDay + tickTime;
+            }
+            else if (tickTime > TimeSpan.TicksPerDay)
+                tickTime = tickTime - TimeSpan.TicksPerDay;
+            return tickTime;
+        }
 
 
         /// <summary>
@@ -212,7 +218,7 @@ namespace SlugEnt
             // Now convert to milliseconds4
             //int seconds = (second + minute * 60 + hour * 3600);
 
-            long ticks = TICKS_IN_SECOND * (second + minute * 60 + hour * 3600);
+            long ticks = TimeSpan.TicksPerSecond * (second + minute * 60 + hour * 3600);
             return ticks;
         }
 
